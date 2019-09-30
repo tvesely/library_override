@@ -1,11 +1,12 @@
 #include <stdlib.h>
+#include <stdint.h>
 #include "basic_string.h"
 
 void *
 override_memcpy(void *dest, const void *src, size_t n)
 {
-	char	   *src_p = (char *) src;
-	char	   *dest_p = (char *) dest;
+	uint8_t    *src_p = (uint8_t *) src;
+	uint8_t    *dest_p = (uint8_t *) dest;
 
 	for (int i = 0; i < n; i++)
 		dest_p[i] = src_p[i];
@@ -16,10 +17,10 @@ override_memcpy(void *dest, const void *src, size_t n)
 void *
 override_memset(void *s, int c, size_t n)
 {
-	char	   *s_p = (char *) s;
+	uint8_t    *s_p = (uint8_t *) s;
 
-	for (int i = 0; i < n; i++)
-		s_p[i] = (char) c;
+	for (size_t i = 0; i < n; i++)
+		s_p[i] = (uint8_t) c;
 
 	return s;
 }
@@ -27,10 +28,10 @@ override_memset(void *s, int c, size_t n)
 int
 override_memcmp(const void *s1, const void *s2, size_t n)
 {
-	unsigned char *s1_p = (unsigned char *) s1;
-	unsigned char *s2_p = (unsigned char *) s2;
+	uint8_t    *s1_p = (uint8_t *) s1;
+	uint8_t    *s2_p = (uint8_t *) s2;
 
-	for (int i = 0; i < n; i++)
+	for (size_t i = 0; i < n; i++)
 	{
 		if (s1_p[i] < s2_p[i])
 			return -1;
@@ -110,14 +111,15 @@ override_strchrnul(const char *s, int c)
 void *
 override_memmove(void *dest, const void *src, size_t n)
 {
-    void *ret = dest;
+	void	   *ret = dest;
+
 	while (n--)
 	{
-        if(dest < src)
-            *(unsigned char*) dest++ = *(unsigned char*) src++;
-        else
-            ((unsigned char*) dest)[n] = ((unsigned char*) src)[n];
-    }
+		if (dest < src)
+			*(uint8_t*) dest++ = *(uint8_t*) src++;
+		else
+			((uint8_t *) dest)[n] = ((uint8_t *) src)[n];
+	}
 
 	return ret;
 }
